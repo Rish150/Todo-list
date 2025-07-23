@@ -88,8 +88,8 @@ function resetDateFilters() {
 function addTodo() {
   const taskInput = document.getElementById("inputTask");
   const taskValue = taskInput.value.trim();
-  const fromDate = document.getElementById("fromDate").value;
-  const toDate = document.getElementById("toDate").value;
+  const fromDate = document.getElementById("addFromDate").value;
+  const toDate = document.getElementById("addToDate").value;
 
   if (!taskValue || !fromDate || !toDate) {
     alert("Please fill all fields including From and To dates.");
@@ -114,6 +114,8 @@ function addTodo() {
       if (res.status === "success") {
         todos.unshift({ task: taskValue, fromDate, toDate });
         taskInput.value = "";
+        document.getElementById("addFromDate").value = "";
+        document.getElementById("addToDate").value = "";
         currentPage = 1;
         filterTodos();
       } else {
@@ -138,11 +140,14 @@ function DeleteAll() {
   document.getElementById("searchInput").value = "";
   document.getElementById("fromDate").value = "";
   document.getElementById("toDate").value = "";
+  document.getElementById("addFromDate").value = "";
+  document.getElementById("addToDate").value = "";
   currentPage = 1;
   filterTodos();
 }
 
-// Simulate initial dummy data with timestamps removed
+// Initial dummy data
+
 todos = [
   { task: "Learn JavaScript", fromDate: "2025-07-20", toDate: "2025-07-21" },
   { task: "Read a book", fromDate: "2025-07-19", toDate: "2025-07-20" },
