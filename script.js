@@ -1,4 +1,4 @@
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxVJhl-5F-KDpbMs3PSOYNkerAuYdhNMaYmHVJbRAWP6mSkwkk388t_SlSl4-5esLet/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz8Yl8ujbPjp3lmvAi-SITsU5AU8Bsq6m8NcpDIZTfRJmcf0kVVlGQfLkFWKjftOuKOEA/exec";
 
 let todos = [];
 let currentPage = 1;
