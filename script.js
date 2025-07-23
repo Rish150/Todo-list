@@ -1,4 +1,4 @@
-const TODOS_API = 'https://dummyjson.com/todos';
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby6ajQ85qhlTt38Sd8p22lU0WGN0jL5wdLwJNHH6PNs0ZRCz-7DBx-TKi61dnZa581vQw/exec";
 let currentPage = 1;
 const todosPerPage = 5;
 let allTodos = [];
@@ -7,35 +7,17 @@ const input = document.getElementById('inputTask');
 const toDoList = document.getElementById('list');
 
 window.onload = () => {
-  fetchTodos();
+  // Initialize empty
+  allTodos = [];
+  renderTodos(getPaginatedTodos(currentPage));
 };
-
-async function fetchTodos(page = 1) {
-  try {
-    showLoader();
-    const res = await fetch(`${TODOS_API}?limit=100`);
-    const data = await res.json();
-    allTodos = data.todos.map(todo => ({
-      ...todo,
-      createdDate: new Date(Date.now() - Math.random() * 10000000000),
-      dueDate: new Date(Date.now() + Math.random() * 10000000000)
-    }));
-    allTodos.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
-    setupPagination(allTodos.length);
-    renderTodos(getPaginatedTodos(page));
-  } catch (err) {
-    alert('Error fetching todos');
-  } finally {
-    hideLoader();
-  }
-}
 
 function renderTodos(todos) {
   toDoList.innerHTML = '';
   todos.forEach(todo => {
     const li = document.createElement('li');
     li.className = 'list-group-item d-flex justify-content-between align-items-center';
-    li.innerHTML = `<div><strong>${todo.todo}</strong><br><small>From: ${new Date(todo.createdDate).toLocaleDateString()} | To: ${todo.dueDate ? new Date(todo.dueDate).toLocaleDateString() : 'N/A'}</small></div>`;
+    li.innerHTML = `<div><strong>${todo.task}</strong><br><small>From: ${todo.fromDate} | To: ${todo.toDate || 'N/A'}</small></div>`;
     toDoList.appendChild(li);
   });
 }
@@ -61,28 +43,39 @@ function setupPagination(totalCount) {
 
 async function addTodo() {
   const todoText = input.value.trim();
-  const createdDateInput = document.getElementById('inputCreatedDate').value;
-  const dueDateInput = document.getElementById('inputDueDate').value;
+  const fromDate = document.getElementById('inputCreatedDate').value;
+  const toDate = document.getElementById('inputDueDate').value;
   if (!todoText) return;
+
   try {
     showLoader();
-    const res = await fetch(`${TODOS_API}/add`, {
+    const res = await fetch(WEB_APP_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ todo: todoText, completed: false, userId: 5 })
+      body: JSON.stringify({
+        task: todoText,
+        fromDate: fromDate || new Date().toISOString().slice(0, 10),
+        toDate: toDate || ''
+      }),
+      headers: { 'Content-Type': 'application/json' }
     });
-    if (!res.ok) throw new Error('Add failed');
-    const newTodo = await res.json();
-    newTodo.createdDate = createdDateInput ? new Date(createdDateInput) : new Date();
-    newTodo.dueDate = dueDateInput ? new Date(dueDateInput) : null;
-    allTodos.unshift(newTodo);
-    allTodos.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
+
+    if (!res.ok) throw new Error('Failed to send to Google Sheets');
+
+    // Add to local list
+    allTodos.unshift({
+      task: todoText,
+      fromDate: fromDate || new Date().toISOString().slice(0, 10),
+      toDate: toDate || ''
+    });
+
     renderTodos(getPaginatedTodos(currentPage));
+    setupPagination(allTodos.length);
+
     input.value = '';
     document.getElementById('inputCreatedDate').value = '';
     document.getElementById('inputDueDate').value = '';
   } catch (err) {
-    alert('Failed to add todo');
+    alert(err.message);
   } finally {
     hideLoader();
   }
@@ -99,7 +92,7 @@ function DeleteAll() {
 
 function searchTodos() {
   const term = document.getElementById('searchInput').value.toLowerCase();
-  const filtered = allTodos.filter(t => t.todo.toLowerCase().includes(term));
+  const filtered = allTodos.filter(t => t.task.toLowerCase().includes(term));
   renderTodos(filtered);
 }
 
@@ -110,7 +103,7 @@ function filterByDate() {
   const to = toInput ? new Date(new Date(toInput).setHours(23, 59, 59, 999)) : null;
 
   const filtered = allTodos.filter(t => {
-    const created = new Date(t.createdDate);
+    const created = new Date(t.fromDate);
     return (!from || created >= from) && (!to || created <= to);
   });
   renderTodos(filtered);
