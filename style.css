@@ -1,0 +1,26 @@
+body {
+  background: linear-gradient(0deg, rgba(101, 84, 255, 1) 0%, rgba(34, 193, 195, 1) 42%, rgba(135, 229, 239, 1) 72%);
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+#list li small {
+  font-size: 0.75rem;
+  color: gray;
+}
+
+#pagination button {
+  margin: 0 2px;
+}
+
+input[type="text"], input[type="date"] {
+  font-size: 1rem;
+}
+
+#loader {
+  margin-top: 20px;
+}

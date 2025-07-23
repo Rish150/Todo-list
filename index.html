@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://kit.fontawesome.com/779f50c835.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+    <title>TODO List</title>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1 class="text-center mb-4">Todo App</h1>
+
+      <div class="row mb-3">
+        <div class="col-4">
+          <input type="text" id="inputTask" class="form-control" placeholder="Add your new todo">
+        </div>
+        <div class="col-3">
+          <input type="date" id="inputCreatedDate" class="form-control" placeholder="From Date">
+        </div>
+        <div class="col-3">
+          <input type="date" id="inputDueDate" class="form-control" placeholder="To Date">
+        </div>
+        <div class="col-2 d-grid">
+          <button class="btn btn-primary" onclick="addTodo()">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col">
+          <input type="text" id="searchInput" class="form-control" placeholder="Search by task name" oninput="searchTodos()">
+        </div>
+        <div class="col">
+          <input type="date" id="fromDate" class="form-control" placeholder="From Date" onchange="filterByDate()" title="From Date">
+        </div>
+        <div class="col">
+          <input type="date" id="toDate" class="form-control" placeholder="To Date" onchange="filterByDate()" title="To Date">
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-secondary" onclick="resetDateFilters()">Clear Dates</button>
+        </div>
+      </div>
+
+      <ul class="list-group mb-3" id="list"></ul>
+
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-danger" onclick="DeleteAll()">Clear All</button>
+        <div id="pagination" class="btn-group"></div>
+      </div>
+
+      <div id="loader" class="text-center mt-3" style="display: none;">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
